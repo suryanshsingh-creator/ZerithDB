@@ -85,8 +85,8 @@ export async function initCommand(
     await scaffoldTemplate(targetDir, appName, template);
     spinner.succeed(`Created ${chalk.cyan(appName)}`);
   } catch (err) {
-    spinner.fail("Scaffold failed");
-    console.error(err);
+    spinner.fail(chalk.red("Scaffold failed"));
+    console.error(chalk.red("Error:"), err);
     process.exit(1);
   }
 
@@ -95,9 +95,9 @@ export async function initCommand(
     const installSpinner = ora("Installing dependencies...").start();
     try {
       await execa("npm", ["install"], { cwd: targetDir });
-      installSpinner.succeed("Dependencies installed");
+      installSpinner.succeed(chalk.green("Dependencies installed"));
     } catch {
-      installSpinner.warn("Failed to install dependencies. Run `npm install` manually.");
+      installSpinner.warn(chalk.yellow("Failed to install dependencies. Run `npm install` manually."));
     }
   }
 
