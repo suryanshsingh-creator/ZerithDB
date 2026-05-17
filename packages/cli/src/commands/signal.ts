@@ -16,10 +16,17 @@ export async function signalCommand(options: { port: string }): Promise<void> {
         `
 import chalk from "chalk";
 import { WebSocketServer } from 'ws';
+import fs from 'fs';
+import path from 'path';
 const PORT = ${port};
 const rooms = new Map();
 const wss = new WebSocketServer({ port: PORT });
+const maintenanceFile = path.join(process.cwd(), '.maintenance');
 wss.on('connection', (ws, req) => {
+  if (fs.existsSync(maintenanceFile)) {
+    ws.close(1012, 'Maintenance mode');
+    return;
+  }
   const url = new URL(req.url, 'http://localhost');
   const roomId = url.searchParams.get('room');
   const peerId = url.searchParams.get('peer');
